@@ -5,7 +5,7 @@ namespace App\Controller;
 use Core\AbstractController;
 
 class Blog extends AbstractController {
-    function getMessagesAction() {
+    function getMessages() {
         echo __METHOD__;
     }
 }

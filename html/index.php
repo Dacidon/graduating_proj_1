@@ -3,28 +3,19 @@ include '../vendor/autoload.php';
 
 use \App\Controller\User;
 use \App\Controller\Blog;
+use Core\Router;
 
-$urlParts = parse_url($_SERVER['REQUEST_URI']);
+$route = new Router(); 
+// $route->addRoute('/user/login', User::class, 'login');
+// $route->addRoute('/user/register', User::class, 'register');
+// $route->addRoute('/blog/messages', Blog::class, 'getMessages');
 
-switch($urlParts['path']) {
-    case '/user/login':
-        $controller = new User();
-        $controller->loginAction();
-        break;
+$controllerName = $route->getController();
+$actionName = $route->getAction();
 
-    case '/user/register':
-        $controller = new User();
-        $controller->registerAction();
-        break;
+$controller = new $controllerName;
 
-    case '/blog/messages':
-        $controller = new Blog();
-        $controller->getMessagesAction();
-        break;
+$controller->$actionName();
 
-    default:
-        echo '404 PAGE NOT FOUND';
-        header("HTTP/1.0 404 Not Found");
-        break;
-}
+
 

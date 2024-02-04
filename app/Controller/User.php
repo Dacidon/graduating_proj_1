@@ -5,11 +5,11 @@ namespace App\Controller;
 use Core\AbstractController;
 
 class User extends AbstractController {
-    function loginAction() {
+    function login() {
         echo __METHOD__;
     }
 
-    function registerAction() {
+    function register() {
         echo __METHOD__;
     }
 }
