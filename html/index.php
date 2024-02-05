@@ -1,21 +1,18 @@
 <?php
+
+ini_set('display_errors', 1); 
+ini_set('display_startup_errors', 1);
+
+use Core\Application;
+
 include '../vendor/autoload.php';
 
-use \App\Controller\User;
-use \App\Controller\Blog;
-use Core\Router;
+include '../src/config.php';
 
-$route = new Router(); 
-// $route->addRoute('/user/login', User::class, 'login');
-// $route->addRoute('/user/register', User::class, 'register');
-// $route->addRoute('/blog/messages', Blog::class, 'getMessages');
+$app = new Application();
+$app->start();
 
-$controllerName = $route->getController();
-$actionName = $route->getAction();
 
-$controller = new $controllerName;
-
-$controller->$actionName();
 
 
 

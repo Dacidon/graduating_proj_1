@@ -10,6 +10,6 @@ class User extends AbstractController {
     }
 
     function register() {
-        echo __METHOD__;
+        return $this->view->render('/User/register.phtml');
     }
 }
