@@ -10,6 +10,11 @@ class View {
         $this->templatePath = PROJECT_ROOT_DIR . DIRECTORY_SEPARATOR . 'app/View';
     }
 
+    public function assign(string $name, $value)
+    {
+        $this->data[$name] = $value;
+    }
+
     public function render($tpl, $data = []): string {
         $this->data += $data;
         ob_start();
@@ -17,8 +22,8 @@ class View {
         return ob_get_clean();
     }
 
-    public function __get($name)
+    public function __get($varName)
     {
-        return $this->data[$name] ?? null;
+        return $this->data[$varName] ?? null;
     }
 }

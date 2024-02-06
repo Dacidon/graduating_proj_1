@@ -2,13 +2,21 @@
 
 namespace App\Controller;
 
+use App\Model\User as UserModel;
 use Core\AbstractController;
 
-class Blog extends AbstractController {
-    function getMessages() {
-        if (isset($_GET['redirect'])) {
+class Blog extends AbstractController 
+{
+
+    function getMessages() 
+    {
+
+        if (!$this->user) {
             $this->redirect('user/register');
         }
-        echo __METHOD__;
+
+        return $this->view->render('Blog/index.phtml', [
+            'user' => $this->user
+        ]);
     }
 }

@@ -2,10 +2,6 @@
 
 namespace Core;
 
-use App\Controller\User;
-use App\Controller\Blog;
-
-
 class Router {
 
     private $controllerName;

@@ -33,8 +33,8 @@ class Application {
     }
 
     private function addRoutes() {
-        // $this->router->addRoute('/user/login', User::class, 'login');
-        // $this->router->addRoute('/user/register', User::class, 'register');
+        $this->router->addRoute('/user/login', User::class, 'login');
+        $this->router->addRoute('/user/register', User::class, 'register');
         $this->router->addRoute('/blog', Blog::class, 'getMessages');
     }
 
