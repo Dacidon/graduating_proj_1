@@ -4,6 +4,7 @@ namespace Core;
 use App\Controller\User;
 use App\Controller\Blog;
 use Core\View;
+use Core\Session;
 
 class Application {
     private $router;
@@ -23,6 +24,9 @@ class Application {
             $view = new View();
             $this->controller->setView($view);
 
+            $session = new Session();
+            $session->init();
+
             $content = $this->controller->{$this->actionName}();
 
             echo $content;
@@ -35,7 +39,7 @@ class Application {
     private function addRoutes() {
         $this->router->addRoute('/user/login', User::class, 'login');
         $this->router->addRoute('/user/register', User::class, 'register');
-        $this->router->addRoute('/blog', Blog::class, 'getMessages');
+        $this->router->addRoute('/blog/index', Blog::class, 'getMessages');
     }
 
     private function initController() {

@@ -9,9 +9,9 @@ class User extends AbstractController {
 
     public function login()
     {
-        $email = trim($_POST['email']);
 
-        if ($email) {
+        if (isset($_POST['email'])) {
+            $email = trim($_POST['email']);
             $password = $_POST['password'];
             $user = UserModel::getByEmail($email);
             if (!$user) {
@@ -19,20 +19,22 @@ class User extends AbstractController {
             }
 
             if ($user) {
-                if ($user->getPassword() != UserModel::getPasswordHash($password)) {
+                if ($user->getEmail() != $email) {
                     $this->view->assign('error', 'Неверный Email или пароль');
-                } else if ($user->getEmail() != $email) {
+                } else if ($user->getPassword() != UserModel::getPasswordHash($password)) {
                     $this->view->assign('error', 'Неверный Email или пароль');
                 } else {
                     $user->setLastLoginDate();
                     $_SESSION['user_id'] = $user->getId();
-                    $this->redirect('/blog');
+                    return $this->view->render('Blog/index.phtml', [
+                        'user' => UserModel::getById((int) $_SESSION['user_id'])
+                    ]);
                 }
             }
         }
 
-        return $this->view->render('User/register.phtml', [
-            'user' => UserModel::getById((int) $_GET['user_id'])
+        return $this->view->render('User/login.phtml', [
+            'user' => UserModel::getById((int) $_SESSION['user_id'])
         ]);
     }
 
@@ -90,27 +92,28 @@ class User extends AbstractController {
 
                 $user->save();
 
-                $_SESSION['user_id'] = $user->getId();
+                $this->session->authUser($user->getId());
                 $this->setUser($user);
-
-                $this->redirect('/blog/index');
+                return $this->view->render('Blog/index.phtml', [
+                    'user' => UserModel::getById((int) $_SESSION['user_id'])
+                ]);
             }
         }
 
         return $this->view->render('User/register.phtml', [
-            'user' => UserModel::getById((int) $_GET['user_id'])
+            'user' => UserModel::getById((int) $_SESSION['user_id'])
         ]);
     }
 
-    public function profileAction()
+    public function profile()
     {
         return $this->view->render('User/profile.phtml', [
-            'user' => UserModel::getById((int) $_GET['user_id'])
+            'user' => UserModel::getById((int) $_SESSION['user_id'])
         ]);
 
     }
 
-    public function logoutAction()
+    public function logout()
     {
         session_destroy();
 

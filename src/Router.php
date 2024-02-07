@@ -2,7 +2,8 @@
 
 namespace Core;
 
-class Router {
+class Router 
+{
 
     private $controllerName;
     private $actionName;

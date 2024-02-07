@@ -1,0 +1,12 @@
+Войти
+<form action="/user/login" method="post">
+    E-mail: <input type="email" name="email"> <br>
+    Пароль: <input type="password" name="password"> <br>
+    <input type="submit" value="Войти">
+</form>
+
+<br>
+<br>
+<?php if($this->error): ?>
+    <span style="color: red"><?=$this->error;?></span>
+<?php endif; ?>

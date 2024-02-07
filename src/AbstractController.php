@@ -1,5 +1,4 @@
 <?php
-
 namespace Core;
 
 use App\Model\User;
@@ -8,6 +7,7 @@ abstract class AbstractController {
 
     protected $view;
     protected $user;
+    protected $session;
 
     protected function redirect(string $url)
     {
@@ -22,5 +22,10 @@ abstract class AbstractController {
     public function setUser(User $user): void
     {
         $this->user = $user;
+    }
+
+    public function setSession(Session $session)
+    {
+        $this->session = $session;
     }
 }

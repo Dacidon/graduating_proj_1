@@ -84,7 +84,7 @@ class User extends AbstractModel
 
         $user_id = $db->lastInsertId();
         $this->user_id = $user_id;
-
+        
         return $user_id;
     }
 
@@ -134,5 +134,10 @@ class User extends AbstractModel
     public static function getPasswordHash(string $password)
     {
         return sha1('d!a.c,i&d?o*n(' . $password);
+    }
+
+    public static function isUserAuthorized(): bool
+    {
+        return isset($_SESSION['user_id']);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Model\User as UserModel;
 use Core\AbstractController;
 
 class Blog extends AbstractController 
@@ -10,9 +9,8 @@ class Blog extends AbstractController
 
     function getMessages() 
     {
-
         if (!$this->user) {
-            $this->redirect('user/register');
+            $this->redirect('/user/login');
         }
 
         return $this->view->render('Blog/index.phtml', [

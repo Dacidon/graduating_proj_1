@@ -15,7 +15,7 @@ class View {
         $this->data[$name] = $value;
     }
 
-    public function render($tpl, $data = []): string {
+    public function render(string $tpl, $data = []): string {
         $this->data += $data;
         ob_start();
         include $this->templatePath . DIRECTORY_SEPARATOR . $tpl;
