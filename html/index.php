@@ -1,18 +1,12 @@
 <?php
+require '../vendor/autoload.php';
+require '../base/config.php';
 
-ini_set('display_errors', 1); 
-ini_set('display_startup_errors', 1);
+ini_set('display_errors', 'on');
+ini_set('error_reporting', E_ALL | E_NOTICE);
 
-use Core\Application;
+$route = new \Base\Route();
+$route->add('/', \App\Controller\Login::class);
 
-include '../vendor/autoload.php';
-
-include '../src/config.php';
-
-$app = new Application();
-$app->start();
-
-
-
-
-
+$app = new \Base\Application($route);
+$app->run();

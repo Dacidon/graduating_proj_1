@@ -1,27 +1,18 @@
 <?php
-namespace Core;
+namespace Base;
 
 use App\Model\User;
 
-abstract class AbstractController {
-
+class AbstractController
+{
+    /** @var View */
     protected $view;
-    protected $user;
+    /** @var Session */
     protected $session;
 
-    protected function redirect(string $url)
-    {
-        throw new RedirectException($url);
-    }
-
-    public function setView(View $view): void
+    public function setView(View $view)
     {
         $this->view = $view;
-    }
-
-    public function setUser(User $user): void
-    {
-        $this->user = $user;
     }
 
     public function getUser(): ?User
@@ -39,8 +30,27 @@ abstract class AbstractController {
         return $user;
     }
 
+    public function getUserId()
+    {
+        if ($user = $this->getUser()) {
+            return $user->getId();
+        }
+
+        return false;
+    }
+
     public function setSession(Session $session)
     {
         $this->session = $session;
+    }
+
+    public function redirect(string $url)
+    {
+        throw new RedirectException($url);
+    }
+
+    public function preDispatch()
+    {
+
     }
 }

@@ -1,21 +1,19 @@
 <?php
+namespace Base;
 
-namespace Core;
-
-class Db 
+class Db
 {
+    /** @var \PDO */
     private $pdo;
     private $log = [];
     private static $instance;
 
     private function __construct()
     {
-        
     }
 
     private function __clone()
     {
-        
     }
 
     public static function getInstance(): self
@@ -27,7 +25,7 @@ class Db
         return self::$instance;
     }
 
-    private function getConnection() 
+    private function getConnection()
     {
         $host = DB_HOST;
         $dbName = DB_NAME;
@@ -50,6 +48,7 @@ class Db
 
     public function fetchAll(string $query, $_method, array $params = [])
     {
+        $t = microtime(true);
         $prepared = $this->getConnection()->prepare($query);
 
         $ret = $prepared->execute($params);
@@ -62,12 +61,14 @@ class Db
 
         $data = $prepared->fetchAll(\PDO::FETCH_ASSOC);
         $affectedRows = $prepared->rowCount();
+        $this->log[] = [$query, microtime(true) - $t, $_method, $affectedRows];
 
         return $data;
     }
 
     public function fetchOne(string $query, $_method, array $params = [])
     {
+        $t = microtime(true);
         $prepared = $this->getConnection()->prepare($query);
 
         $ret = $prepared->execute($params);
@@ -81,6 +82,8 @@ class Db
         $data = $prepared->fetchAll(\PDO::FETCH_ASSOC);
         $affectedRows = $prepared->rowCount();
 
+
+        $this->log[] = [$query, microtime(true) - $t, $_method, $affectedRows];
         if (!$data) {
             return false;
         }
@@ -89,9 +92,12 @@ class Db
 
     public function exec(string $query, $_method, array $params = []): int
     {
-        $prepared = $this->getConnection()->prepare($query);
+        $t = microtime(1);
+        $pdo = $this->getConnection();
+        $prepared = $pdo->prepare($query);
 
         $ret = $prepared->execute($params);
+
 
         if (!$ret) {
             $errorInfo = $prepared->errorInfo();
@@ -100,6 +106,8 @@ class Db
         }
         $affectedRows = $prepared->rowCount();
 
+        $this->log[] = [$query, microtime(1) - $t, $_method, $affectedRows];
+
         return $affectedRows;
     }
 
@@ -107,4 +115,18 @@ class Db
     {
         return $this->getConnection()->lastInsertId();
     }
+
+    public function getLogHTML()
+    {
+        if (!$this->log) {
+            return '';
+        }
+        $res = '';
+        foreach ($this->log as $elem) {
+            $res = $elem[1] . ': ' . $elem[0] . ' (' . $elem[2] . ') [' . $elem[3] . ']' . "\n";
+        }
+        return '<pre>' . $res .'</pre>';
+    }
+
+
 }
