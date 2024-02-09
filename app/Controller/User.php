@@ -7,6 +7,21 @@ use Core\AbstractController;
 
 class User extends AbstractController {
 
+    public function index()
+    {
+        if ($this->getUser()) {
+            $this->redirect('/blog');
+        }
+
+        return $this->view->render(
+            'login.phtml',
+            [
+                'title' => 'Главная страница',
+                'user' => $this->getUser(),
+            ]
+        );
+    }
+
     public function login()
     {
 
@@ -26,9 +41,7 @@ class User extends AbstractController {
                 } else {
                     $user->setLastLoginDate();
                     $_SESSION['user_id'] = $user->getId();
-                    return $this->view->render('Blog/index.phtml', [
-                        'user' => UserModel::getById((int) $_SESSION['user_id'])
-                    ]);
+                    header('Location: /blog/index');
                 }
             }
         }

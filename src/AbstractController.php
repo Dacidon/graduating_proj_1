@@ -24,6 +24,21 @@ abstract class AbstractController {
         $this->user = $user;
     }
 
+    public function getUser(): ?User
+    {
+        $userId = $this->session->getUserId();
+        if (!$userId) {
+            return null;
+        }
+
+        $user = User::getById($userId);
+        if (!$user) {
+            return null;
+        }
+
+        return $user;
+    }
+
     public function setSession(Session $session)
     {
         $this->session = $session;

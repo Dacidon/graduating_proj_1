@@ -1,12 +1,28 @@
-Войти
-<form action="/user/login" method="post">
-    E-mail: <input type="email" name="email"> <br>
-    Пароль: <input type="password" name="password"> <br>
-    <input type="submit" value="Войти">
-</form>
+<html>
+<body>
+    <h3><?=$this->title;?></h3>
+    <?php
+    $user = $this->user;?>
 
-<br>
-<br>
-<?php if($this->error): ?>
-    <span style="color: red"><?=$this->error;?></span>
-<?php endif; ?>
+    <? if(!$user): ?>
+        <h3>Зарегистрироваться</h3>
+        <form action="/user/register" method="post">
+            Login: <input type="text" value="" name="username"><br>
+            Email: <input type="text" value="" name="email"><br>
+            Password: <input type="text" value="" name="password"><br>
+            Confirm Password: <input type="text" value="" name="password_check"><br>
+            <input type="submit" value="Зарегистрироваться">
+        </form>
+        <h3>Войти</h3>
+        <form action="/user/login" method="post">
+            <div class="field">Email:</div> <input type="text" value="" name="email"><br>
+            <div class="field">Password:</div> <input type="text" value="" name="password"><br>
+            <input type="submit" value="Войти">
+        </form>
+<? else: ?>
+    Вы вошли как <?=$user->getName();?>
+<? endif; ?>
+
+</body>
+</head>
+</html>
