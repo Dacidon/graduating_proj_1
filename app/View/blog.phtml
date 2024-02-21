@@ -1,4 +1,4 @@
-<style>
++<style>
     .message { margin: 5px 0 0 5px; border: 1px solid grey; width: 450px; min-height: 100px;}
     .author { margin-left: 10px; }
     .text { padding-left: 15px; padding-top: 15px; }
@@ -12,6 +12,13 @@
 /** @var $user \App\Model\User */
 $user = $this->user;
 ?>
+
+Вы вошли как <?=$user->getName();?>#<?=$user->getId();?> <a href="/logout">выйти</a>
+<br><br>
+
+Список сообщений:
+<br><br>
+
 <?php if($messages = $this->messages): ?>
     <?php foreach ($messages as $message): ?>
         <div class="message">

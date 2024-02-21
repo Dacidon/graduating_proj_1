@@ -1,130 +1,39 @@
 <?php
+
 namespace App\Model;
 
-use Base\Db;
+use Illuminate\Database\Eloquent\Model;
 
-class User
+class User extends Model
 {
-    private $id;
-    private $name;
-    private $createdAt;
-    private $password;
-    private $email;
+    protected $table = 'users';
+    public $timestamps = false;
 
-    public function __construct(array $data)
-    {
-        $this->name = $data['name'];
-        $this->password = $data['password'];;
-        $this->createdAt = $data['created_at'];
-        $this->email = $data['email'];
-    }
+    protected $fillable = [
+        'name',
+        'password',
+        'email',
+        'created_at',
+    ];
 
     public static function getByEmail(string $email)
     {
-        $db = Db::getInstance();
-        $data = $db->fetchOne(
-            "SELECT * fROM users WHERE email = :email",
-            __METHOD__,
-            [':email' => $email]
-        );
-        if (!$data) {
-            return null;
-        }
-
-        $user = new self($data);
-        $user->id = $data['id'];
-        return $user;
+        return self::query()->where('email', '=', $email)->first();
     }
 
-    public static function getByIds(array $userIds)
+    public static function getById(int $id)
     {
-        $db = Db::getInstance();
-        $idsString = implode(',', $userIds);
-        $data = $db->fetchAll(
-            "SELECT * fROM users WHERE id IN($idsString)",
-            __METHOD__
-        );
-        if (!$data) {
-            return [];
-        }
-
-        $users = [];
-        foreach ($data as $elem) {
-            $user = new self($elem);
-            $user->id = $elem['id'];
-            $users[$user->id] = $user;
-        }
-
-        return $users;
+        return self::query()->find($id);
     }
 
-    public function save()
+    public static function getList(int $limit = 10, int $offset = 0)
     {
-        $db = Db::getInstance();
-        $res = $db->exec(
-            'INSERT INTO users (
-                    name, 
-                    password, 
-                    created_at,
-                    email
-                    ) VALUES (
-                    :name, 
-                    :password, 
-                    :created_at,
-                    :email
-                )',
-            __FILE__,
-            [
-                ':name' => $this->name,
-                ':password' => self::getPasswordHash($this->password),
-                ':created_at' => $this->createdAt,
-                ':email' => $this->email,
-            ]
-        );
-
-        $this->id = $db->lastInsertId();
-
-        return $res;
-    }
-
-    public static function getById(int $id): ?self
-    {
-        $db = Db::getInstance();
-        $data = $db->fetchOne("SELECT * fROM users WHERE id = :id", __METHOD__, [':id' => $id]);
-        if (!$data) {
-            return null;
-        }
-
-        $user = new self($data);
-        $user->id = $id;
-        return $user;
-    }
-
-
-    public static function getList(int $limit = 10, int $offset = 0): array
-    {
-        $db = Db::getInstance();
-        $data = $db->fetchAll(
-            "SELECT * fROM users LIMIT $limit OFFSET $offset",
-            __METHOD__
-        );
-        if (!$data) {
-            return [];
-        }
-
-        $users = [];
-        foreach ($data as $elem) {
-            $user = new self($elem);
-            $user->id = $elem['id'];
-            $users[] = $user;
-        }
-
-        return $users;
+        return self::query()->limit($limit)->offset($offset)->orderBy('id', 'DESC')->get();
     }
 
     public static function getPasswordHash(string $password)
     {
-        return sha1('.,f.akjsduf' . $password);
+        return sha1('err0igj.feo' . $password);
     }
 
     /**

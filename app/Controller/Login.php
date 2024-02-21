@@ -74,4 +74,10 @@ class Login extends AbstractController
         $this->session->authUser($user->getId());
         $this->redirect('/blog');
     }
+
+    public function logout()
+    {
+        $this->session->dropSession();
+        $this->redirect('/');
+    }
 }

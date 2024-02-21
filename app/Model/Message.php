@@ -1,99 +1,42 @@
 <?php
+
 namespace App\Model;
 
-use Base\Db;
+use Illuminate\Database\Eloquent\Model;
 
-class Message
+class Message extends Model
 {
-    private $id;
-    private $text;
-    private $createdAt;
-    private $authorId;
-    private $author;
-    private $image;
+    protected $table = 'messages';
+    public $timestamps = false;
+    protected $fillable = [
+        'text',
+        'created_at',
+        'author_id',
+        'image',
+    ];
 
-    public function __construct(array $data)
+    public function author()
     {
-        $this->text = $data['text'];
-        $this->createdAt = $data['created_at'];
-        $this->authorId = $data['author_id'];
-        $this->image = $data['image'] ?? '';
+        return $this->belongsTo(User::class);
     }
 
     public static function deleteMessage(int $messageId)
     {
-        $db = Db::getInstance();
-        $query = "DELETE FROM messages WHERE id = $messageId";
-        return $db->exec($query, __METHOD__);
+        return self::destroy($messageId);
     }
 
-    public function save()
+    public static function getList(int $limit = 10, int $offset = 0)
     {
-        $db = Db::getInstance();
-        $res = $db->exec(
-            'INSERT INTO messages (
-                    text, 
-                    created_at,
-                    author_id,
-                    image
-                    ) VALUES (
-                    :text, 
-                    :created_at,
-                    :author_id,
-                    :image
-                )',
-            __FILE__,
-            [
-                ':text' => $this->text,
-                ':created_at' => $this->createdAt,
-                ':author_id' => $this->authorId,
-                ':image' => $this->image,
-            ]
-        );
-
-        return $res;
+        return self::with('author')
+            ->limit($limit)
+            ->offset($offset)
+            ->orderBy('id', 'DESC')
+            ->get();
     }
 
-    public static function getList(int $limit = 10, int $offset = 0): array
+    public static function getUserMessages(int $userId, int $limit)
     {
-        $db = Db::getInstance();
-        $data = $db->fetchAll(
-            "SELECT * fROM messages LIMIT $limit OFFSET $offset",
-            __METHOD__
-        );
-        if (!$data) {
-            return [];
-        }
-
-        $messages = [];
-        foreach ($data as $elem) {
-            $message = new self($elem);
-            $message->id = $elem['id'];
-            $messages[] = $message;
-        }
-
-        return $messages;
-    }
-
-    public static function getUserMessages(int $userId, int $limit): array
-    {
-        $db = Db::getInstance();
-        $data = $db->fetchAll(
-            "SELECT * fROM messages WHERE author_id = $userId LIMIT $limit",
-            __METHOD__
-        );
-        if (!$data) {
-            return [];
-        }
-
-        $messages = [];
-        foreach ($data as $elem) {
-            $message = new self($elem);
-            $message->id = $elem['id'];
-            $messages[] = $message;
-        }
-
-        return $messages;
+        return self::query()->where('author_id', '=', $userId)->limit($limit)->get();
     }
 
     /**
@@ -131,7 +74,7 @@ class Message
     /**
      * @return User
      */
-    public function getAuthor(): User
+    public function getAuthor(): ?User
     {
         return $this->author;
     }
